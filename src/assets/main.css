@@ -1,0 +1,11 @@
+html,
+body,
+.full-screen {
+  height: 100%;
+}
+
+.full-screen {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+}
