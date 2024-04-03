@@ -248,7 +248,7 @@ function newTrack() {
   track.value = { "id": uniqid(), "label": "Scene X", "file": "http://localhost:8081/?video=scene1.mp4", "offset": "2024-03-25T08:48:23.000Z", "type": "segments", "version": 1, "processed": null, "processor": "Tobias Fehrer", "localisations": [] };
 }
 
-const stream = "https://vc11-wi.fit.fraunhofer.de/stream.php?key=ca8da77e134d5b3f74f3054239ec304584b842e1&video=";
+const stream = import.meta.env.VITE_STREAM;
 
 function loadSceneFile(event) {
   const file = event.target.files[0];
