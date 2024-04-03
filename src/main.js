@@ -24,6 +24,6 @@ const app = createApp(App)
 app.use(VueVideoPlayer)
 app.use(vueAutocomplete);
 
-app.use(key)
+app.use(key, { prevent: ['input', 'textarea'] })
 
 app.mount('#app')

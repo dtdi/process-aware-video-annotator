@@ -4,6 +4,8 @@ import { computed, onMounted, reactive, ref } from 'vue';
 
 const currentSegment = ref();
 
+
+
 const currentSubSegment = ref();
 
 onMounted(() => {
@@ -170,17 +172,6 @@ function removeSegment(container, segment) {
   currentSubSegment.value = '';
 }
 
-const currentFile = computed({
-  get() {
-    if (track.value)
-      return track.value.file;
-  },
-  set(value) {
-
-    track.value.file = value;
-  }
-})
-
 const offsetDate = computed({
   get() {
     let d = new Date(track.value.offset);
@@ -239,17 +230,27 @@ function setTimeFor(value, place) {
   value[place] = currentTime.value;
 }
 
+const currentFile = computed(() => {
+  return [{
+    src: track.value?.file,
+    type: 'video/mp4'
+  }];
+});
+
 const time = ref(0);
 
 function jump(secs) {
   playerObj.value.currentTime(playerObj.value.currentTime() + secs)
 }
 
+
 function newTrack() {
   track.value = { "id": uniqid(), "label": "Scene X", "file": "http://localhost:8081/?video=scene1.mp4", "offset": "2024-03-25T08:48:23.000Z", "type": "segments", "version": 1, "processed": null, "processor": "Tobias Fehrer", "localisations": [] };
 }
 
-function loadConfig(event) {
+const stream = "https://vc11-wi.fit.fraunhofer.de/stream.php?key=ca8da77e134d5b3f74f3054239ec304584b842e1&video=";
+
+function loadSceneFile(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
@@ -257,6 +258,8 @@ function loadConfig(event) {
       try {
         const d = (JSON.parse(e.target.result));
         track.value = d;
+        track.value.file = stream + d.file;
+        console.log(track.value);
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
@@ -284,7 +287,6 @@ function exportToJson() {
 }
 
 function sortSegments(segment) {
-  console.log(segment.localisation);
   segment.localisation.sort((a, b) => a.tcin.localeCompare(b.tcin))
 }
 
@@ -395,16 +397,20 @@ function uniqid(prefix = "", random = false) {
             </div>
             <div class="row mb-2">
               <div class="input-group input-group-lg">
-                <button @click="jump(-1)" class="btn btn-secondary">-1</button>
-                <button v-shortkey="['space']" class="btn btn-sm btn-primary" @click="togglePlay"
-                  @shortkey="togglePlay">
+                <button v-shortkey="['shift', 'd']" @shortkey="jump(-1)" @click="jump(-1)"
+                  class="btn btn-secondary">-1</button>
+                <button v-shortkey="['space']" @shortkey="togglePlay" class="btn btn-sm btn-primary"
+                  @click="togglePlay">
                   <i v-if="playerObj && playerObj.paused()" class="bi btn-sm bi-play"></i>
                   <i v-else class="bi bi-pause"></i>
                 </button>
-                <button @click="jump(1)" class="btn btn-secondary">1</button>
-                <button @click="jump(1)" class="btn btn-secondary">5</button>
+                <button v-shortkey="['shift', 'f']" @shortkey="jump(1)" @click="jump(1)"
+                  class="btn btn-secondary">1</button>
+                <button v-shortkey="['shift', 'g']" @shortkey="jump(5)" @click="jump(5)"
+                  class="btn btn-secondary">5</button>
                 <span class="input-group-text">{{ currentTime }}</span>
-                <button @click="addSegment(currentSegment)" class="btn btn-success">add</button>
+                <button v-shortkey="['shift', 'enter']" @shortkey="addSegment(currentSegment)"
+                  @click="addSegment(currentSegment)" class="btn btn-success">add</button>
 
               </div>
             </div>
@@ -439,13 +445,23 @@ function uniqid(prefix = "", random = false) {
                 </select>
               </div>
               <div class="col-sm">
-                <venAutocomplete style="background-color: aquamarine;" class="" :list="assets"
-                  v-model="currentSubSegment.data.objects" placeholder="Objects" />
+
+                <select v-model="currentSubSegment.data.objects" class="form-select form-select-sm" multiple>
+                  <option v-for="elem in track.config.assets" :value="elem">{{ elem }}</option>
+                </select>
+
+                <venAutocomplete class="objects" :list="assets" v-model="currentSubSegment.data.objects"
+                  placeholder="Objects" />
 
               </div>
               <div class="col-sm">
-                <venAutocomplete style="background-color: blueviolet;" class="" :list="roles"
-                  v-model="currentSubSegment.data.actors" placeholder="Roles" />
+
+                <select v-model="currentSubSegment.data.actors" class="form-select form-select-sm" multiple>
+                  <option v-for="elem in track.config.actors" :value="elem">{{ elem }}</option>
+                </select>
+
+                <venAutocomplete class="roles" :list="roles" v-model="currentSubSegment.data.actors"
+                  placeholder="Roles" />
 
               </div>
               <div class="col-sm-12">
@@ -464,14 +480,20 @@ function uniqid(prefix = "", random = false) {
       <div v-if="currentSegment" class="flex-fill" style="overflow-y: auto;">
         <div class="card">
           <div class="card-body">
-            <button @click="sortSegments(currentSegment)" class="btn btn-secondary"><i class="bi bi-sort"></i></button>
+            <button @click="sortSegments(currentSegment)" class="btn btn-secondary"><i
+                class="bi bi-sort-numeric-down"></i></button>
           </div>
           <div class="list-group">
-            <a class="list-group-item" @click.prevent="selectSegment(segment)"
-              v-for="(segment, idx) in  currentSegment.localisation">
-              <small class="fw-bold"> {{ segment.tcin }} - {{ segment.tcout }}</small> {{
-      segment.data.activity }} <button @click="removeSegment(currentSegment, segment)"
-                class="btn btn-sm btn-danger"><i class="bi bi-dash"></i></button></a>
+            <a class="list-group-item-action list-group-item  d-flex justify-content-between align-items-center"
+              @click.prevent="selectSegment(segment)" v-for="(segment, idx) in  currentSegment.localisation">
+
+              <span><small class="fw-bold"> {{ segment.tcin }}-{{ segment.tcout }}</small> {{
+      segment.data.activity }}
+                <span v-for="badge in segment.data.objects" class="badge objects me-1">{{ badge }}</span>
+                <span v-for="badge in segment.data.actors" class="badge roles me-1">{{ badge }}</span>
+              </span>
+              <button @click="removeSegment(currentSegment, segment)" class="btn btn-sm btn-danger"><i
+                  class="bi bi-dash"></i></button></a>
           </div>
         </div>
 
@@ -481,8 +503,9 @@ function uniqid(prefix = "", random = false) {
 
     </div>
     <div class="flex-grow-1 video-container">
-      <video-player v-if="currentFile" style="height: 100%; width: auto;" :src="currentFile" @mounted="onPlayerMounted"
-        ref="player" :controls=true :options="videoOptions" @timeupdate="onPlayerTimeUpdate" />
+      <video-player v-if="track?.file" style="height: 100%; width: auto;" :sources="currentFile"
+        @mounted="onPlayerMounted" ref="player" :controls=true :options="videoOptions"
+        @timeupdate="onPlayerTimeUpdate" />
     </div>
   </section>
   <footer class="container-fluid">
@@ -491,7 +514,7 @@ function uniqid(prefix = "", random = false) {
         <button title="create new track" @click="newTrack" class="btn btn-sm me-2 btn-success"><i
             class="bi bi-plus"></i></button>
 
-        <input title="upload track from file" @change="loadConfig" type="file" accept=".json"
+        <input title="upload track from file" @change="loadSceneFile" type="file" accept=".json"
           class="form-control form-control-sm">
       </div>
       <div class="d-flex">
@@ -506,6 +529,7 @@ function uniqid(prefix = "", random = false) {
 
   overflow: hidden;
 }
+
 
 
 footer {

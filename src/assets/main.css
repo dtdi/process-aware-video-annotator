@@ -9,3 +9,13 @@ body,
   overflow: hidden;
   flex-direction: column;
 }
+
+.badge.objects,
+.venAutocomplete.objects .venAutocomplete__input {
+  background-color: var(--bs-orange);
+}
+
+.badge.roles,
+.venAutocomplete.roles .venAutocomplete__input {
+  background-color: var(--bs-indigo);
+}
