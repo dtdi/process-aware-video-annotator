@@ -28,6 +28,16 @@ const roles = computed(() => {
 });
 
 const config = ref({
+  locations: [
+    'door',
+    'window',
+    'shelf',
+    'cupboard left',
+    'cupboard right',
+    'repair desk',
+    'self service desk',
+    'admin/ckeckout desk'
+  ],
   roles: [
     {
       "p_id": 1,
@@ -104,8 +114,12 @@ const config = ref({
     "Label device",
     "Pick asset from self-service desk",
     "Idle",
+    "Open window",
+    "Close window",
+    "Enter room",
+    "Leave room",
     "Chat",
-    "na, see comments"
+    "other, see notes"
   ]
 })
 
@@ -137,6 +151,7 @@ function addContainer() {
         "data": {
           "activity": null,
           "objects": [],
+          "locations": [],
           "attributes": []
         }
       }
@@ -392,24 +407,24 @@ function uniqid(prefix = "", random = false) {
                 <input type="text" v-model="currentSegment.data.variant" class=" form-control-sm form-control"
                   placeholder="Variant" aria-label="Variant">
               </div>
-              <div class="col-sm"> <button class="btn btn-sm btn-danger" @click="removeContainer(currentSegment)"><i
-                    class="bi bi-dash"></i> delete</button> </div>
+              <div class="col-sm"> <button title="trash scene" class="btn btn-sm btn-danger"
+                  @click="removeContainer(currentSegment)"><i class="bi bi-trash"></i></button> </div>
             </div>
             <div class="row mb-2">
               <div class="input-group input-group-lg">
-                <button v-shortkey="['shift', 'd']" @shortkey="jump(-1)" @click="jump(-1)"
+                <button title="SHIFT + D" v-shortkey="['shift', 'd']" @shortkey="jump(-1)" @click="jump(-1)"
                   class="btn btn-secondary">-1</button>
-                <button v-shortkey="['space']" @shortkey="togglePlay" class="btn btn-sm btn-primary"
+                <button title="SPACE" v-shortkey="['space']" @shortkey="togglePlay" class="btn btn-sm btn-primary"
                   @click="togglePlay">
                   <i v-if="playerObj && playerObj.paused()" class="bi btn-sm bi-play"></i>
                   <i v-else class="bi bi-pause"></i>
                 </button>
-                <button v-shortkey="['shift', 'f']" @shortkey="jump(1)" @click="jump(1)"
+                <button title="SHIFT + F" v-shortkey="['shift', 'f']" @shortkey="jump(1)" @click="jump(1)"
                   class="btn btn-secondary">1</button>
-                <button v-shortkey="['shift', 'g']" @shortkey="jump(5)" @click="jump(5)"
+                <button title="SHIFT + G" v-shortkey="['shift', 'g']" @shortkey="jump(5)" @click="jump(5)"
                   class="btn btn-secondary">5</button>
                 <span class="input-group-text">{{ currentTime }}</span>
-                <button v-shortkey="['shift', 'enter']" @shortkey="addSegment(currentSegment)"
+                <button title="SHIFT + ENTER" v-shortkey="['shift', 'enter']" @shortkey="addSegment(currentSegment)"
                   @click="addSegment(currentSegment)" class="btn btn-success">add</button>
 
               </div>
@@ -417,32 +432,36 @@ function uniqid(prefix = "", random = false) {
           </div>
         </div>
       </div>
-      <div v-if="currentSubSegment" class="flex-fill">
+      <div v-if="currentSubSegment" class="flex-fill" style="overflow-y: auto;">
         <div class="card ">
           <div class="card-body">
             <div class="row g-3">
-              <div class="col-sm">
+              <div class="col-sm-6">
                 <div class="input-group-sm input-group">
                   <input class="form-control" type="text" required v-model="currentSubSegment.tcin"
                     title="Write a duration in the format hh:mm:ss.ms">
-                  <button @click="setTimeFor(currentSubSegment, 'tcin')" class="btn btn-outline-primary"><i
-                      class="bi bi-stopwatch"></i></button>
+                  <button title="start timestamp" @click="setTimeFor(currentSubSegment, 'tcin')"
+                    class="btn btn-outline-primary"><i class="bi bi-stopwatch"></i></button>
                 </div>
               </div>
-              <div class="col-sm">
+              <div class="col-sm-6">
                 <div class="input-group input-group-sm">
                   <input class="form-control" type="text" v-model="currentSubSegment.tcout"
                     title="Write a duration in the format hh:mm:ss.ms">
-                  <button @click="setTimeFor(currentSubSegment, 'tcout')" class="btn btn-outline-primary"><i
-                      class="bi bi-stopwatch-fill"></i></button>
+                  <button title="end timestamp" click="setTimeFor(currentSubSegment, 'tcout')"
+                    class="btn btn-outline-primary"><i class="bi bi-stopwatch-fill"></i></button>
                 </div>
               </div>
-              <div class="col-12">
-                <select v-model="currentSubSegment.data.activity" class="form-select form-select-sm" placeholder="Notes"
+              <div class="col-sm-4">
+                <select v-model="currentSubSegment.data.activity" class="form-select form-select-sm"
                   aria-label="Activities">
                   <option v-for="activity in config.activities" :value="activity">{{
       activity }}</option>
                 </select>
+              </div>
+              <div class="col-sm-8">
+                <input type="text" v-model="currentSubSegment.data.notes" class="form-control form-control-sm"
+                  placeholder="Notes" aria-label="Label">
               </div>
               <div class="col-sm">
 
@@ -464,25 +483,20 @@ function uniqid(prefix = "", random = false) {
                   placeholder="Roles" />
 
               </div>
-              <div class="col-sm-12">
-                <input type="text" v-model="currentSubSegment.data.notes" class="form-control form-control-sm"
-                  placeholder="Notes" aria-label="Label">
+              <div class="col-sm-4">
+
+                <select v-model="currentSubSegment.data.locations" class="form-select form-select-sm" multiple>
+                  <option v-for="elem in config.locations" :value="elem">{{ elem }}</option>
+                </select>
+
               </div>
+
 
 
             </div>
           </div>
 
-        </div>
 
-      </div>
-
-      <div v-if="currentSegment" class="flex-fill" style="overflow-y: auto;">
-        <div class="card">
-          <div class="card-body">
-            <button @click="sortSegments(currentSegment)" class="btn btn-secondary"><i
-                class="bi bi-sort-numeric-down"></i></button>
-          </div>
           <div class="list-group">
             <a class="list-group-item-action list-group-item  d-flex justify-content-between align-items-center"
               @click.prevent="selectSegment(segment)" v-for="(segment, idx) in  currentSegment.localisation">
@@ -491,13 +505,15 @@ function uniqid(prefix = "", random = false) {
       segment.data.activity }}
                 <span v-for="badge in segment.data.objects" class="badge objects me-1">{{ badge }}</span>
                 <span v-for="badge in segment.data.actors" class="badge roles me-1">{{ badge }}</span>
+                <span v-for="badge in segment.data.locations" class="badge locations me-1">{{ badge }}</span>
               </span>
-              <button @click="removeSegment(currentSegment, segment)" class="btn btn-sm btn-danger"><i
-                  class="bi bi-dash"></i></button></a>
+              <button title="delete segment" @click="removeSegment(currentSegment, segment)"
+                class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></a>
           </div>
         </div>
 
       </div>
+
 
 
 

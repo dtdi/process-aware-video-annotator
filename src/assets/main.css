@@ -15,7 +15,17 @@ body,
   background-color: var(--bs-orange);
 }
 
+.badge.locations,
+.venAutocomplete.locations .venAutocomplete__input {
+  background-color: var(--bs-green);
+}
+
 .badge.roles,
 .venAutocomplete.roles .venAutocomplete__input {
   background-color: var(--bs-indigo);
+}
+
+.card {
+  --bs-card-spacer-y: 0.25rem;
+  --bs-card-spacer-x: 0.25rem;
 }
