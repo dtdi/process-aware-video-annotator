@@ -19,7 +19,7 @@ import vueAutocomplete from "@venegrad/vue3-autocomplete"
 
 import App from './App.vue'
 
-const app = createApp(App)
+const app = createApp(App, { config: window.config });
 
 app.use(VueVideoPlayer)
 app.use(vueAutocomplete);

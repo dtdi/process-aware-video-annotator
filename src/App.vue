@@ -2,9 +2,9 @@
 import { VideoPlayer } from '@videojs-player/vue'
 import { computed, onMounted, reactive, ref } from 'vue';
 
+const { config } = defineProps(['config'])
+
 const currentSegment = ref();
-
-
 
 const currentSubSegment = ref();
 
@@ -20,108 +20,12 @@ onMounted(() => {
 
 
 const assets = computed(() => {
-  return config.value.assets.map((a) => a.id)
+  return config.assets.map((a) => a.id)
 });
 
 const roles = computed(() => {
-  return config.value.roles.map((a) => a.actor)
+  return config.roles.map((a) => a.actor)
 });
-
-const config = ref({
-  locations: [
-    'door',
-    'window',
-    'shelf',
-    'cupboard left',
-    'cupboard right',
-    'repair desk',
-    'self service desk',
-    'admin/ckeckout desk'
-  ],
-  roles: [
-    {
-      "p_id": 1,
-      "actor": "A1"
-    },
-    {
-      "p_id": 1,
-      "actor": "C3"
-    },
-    {
-      "p_id": 1,
-      "actor": "C7"
-    },
-    {
-      "p_id": 2,
-      "actor": "C1"
-    },
-    {
-      "p_id": 2,
-      "actor": "C4"
-    },
-    {
-      "p_id": 2,
-      "actor": "C8"
-    },
-    {
-      "p_id": 3,
-      "actor": "C2"
-    },
-    {
-      "p_id": 3,
-      "actor": "C5"
-    },
-    {
-      "p_id": 3,
-      "actor": "C9"
-    },
-    {
-      "p_id": 4,
-      "actor": "A2"
-    },
-    {
-      "p_id": 4,
-      "actor": "C6"
-    },
-    {
-      "p_id": 4,
-      "actor": "C10"
-    }
-  ],
-  assets: [{ "p_id": "L1", "id": "L1", "type": "Laptop", "class": "Big IT" }, { "p_id": "L1", "id": "L8", "type": "Laptop", "class": "Big IT" }, { "p_id": "L1", "id": "L9", "type": "Laptop", "class": "Big IT" }, { "p_id": "L2", "id": "L2", "type": "Laptop", "class": "Big IT" }, { "p_id": "L2", "id": "L10", "type": "Laptop", "class": "Big IT" }, { "p_id": "L2", "id": "L11", "type": "Laptop", "class": "Big IT" }, { "p_id": "L3", "id": "L3", "type": "Laptop", "class": "Big IT" }, { "p_id": "L3", "id": "L12", "type": "Laptop", "class": "Big IT" }, { "p_id": "L3", "id": "L13", "type": "Laptop", "class": "Big IT" }, { "p_id": "L4", "id": "L4", "type": "Laptop", "class": "Big IT" }, { "p_id": "L4", "id": "L14", "type": "Laptop", "class": "Big IT" }, { "p_id": "L4", "id": "L15", "type": "Laptop", "class": "Big IT" }, { "p_id": "L5", "id": "L5", "type": "Laptop", "class": "Big IT" }, { "p_id": "L5", "id": "L16", "type": "Laptop", "class": "Big IT" }, { "p_id": "L5", "id": "L17", "type": "Laptop", "class": "Big IT" }, { "p_id": "L6", "id": "L6", "type": "Laptop", "class": "Big IT" }, { "p_id": "L6", "id": "L18", "type": "Laptop", "class": "Big IT" }, { "p_id": "L6", "id": "L19", "type": "Laptop", "class": "Big IT" }, { "p_id": "L7", "id": "L7", "type": "Laptop", "class": "Big IT" }, { "p_id": "L7", "id": "L20", "type": "Laptop", "class": "Big IT" }, { "p_id": "L7", "id": "L21", "type": "Laptop", "class": "Big IT" }, { "p_id": "M1", "id": "M1", "type": "Monitor", "class": "Big IT" }, { "p_id": "M1", "id": "M4", "type": "Monitor", "class": "Big IT" }, { "p_id": "M1", "id": "M5", "type": "Monitor", "class": "Big IT" }, { "p_id": "M2", "id": "M2", "type": "Monitor", "class": "Big IT" }, { "p_id": "M2", "id": "M6", "type": "Monitor", "class": "Big IT" }, { "p_id": "M2", "id": "M7", "type": "Monitor", "class": "Big IT" }, { "p_id": "M3", "id": "M3", "type": "Monitor", "class": "Big IT" }, { "p_id": "M3", "id": "M8", "type": "Monitor", "class": "Big IT" }, { "p_id": "M3", "id": "M9", "type": "Monitor", "class": "Big IT" }, { "p_id": "P1", "id": "P1", "type": "Mouse", "class": "Big IT" }, { "p_id": "P1", "id": "P7", "type": "Mouse", "class": "Big IT" }, { "p_id": "P1", "id": "P8", "type": "Mouse", "class": "Big IT" }, { "p_id": "P2", "id": "P2", "type": "Mouse", "class": "Big IT" }, { "p_id": "P2", "id": "P9", "type": "Mouse", "class": "Big IT" }, { "p_id": "P2", "id": "P10", "type": "Mouse", "class": "Big IT" }, { "p_id": "P3", "id": "P3", "type": "Mouse", "class": "Big IT" }, { "p_id": "P3", "id": "P11", "type": "Mouse", "class": "Big IT" }, { "p_id": "P3", "id": "P12", "type": "Mouse", "class": "Big IT" }, { "p_id": "P4", "id": "P4", "type": "Mouse", "class": "Big IT" }, { "p_id": "P4", "id": "P13", "type": "Mouse", "class": "Big IT" }, { "p_id": "P4", "id": "P14", "type": "Mouse", "class": "Big IT" }, { "p_id": "P5", "id": "P5", "type": "Mouse", "class": "Big IT" }, { "p_id": "P5", "id": "P15", "type": "Mouse", "class": "Big IT" }, { "p_id": "P5", "id": "P16", "type": "Mouse", "class": "Big IT" }, { "p_id": "P6", "id": "P6", "type": "Mouse", "class": "Big IT" }, { "p_id": "P6", "id": "P17", "type": "Mouse", "class": "Big IT" }, { "p_id": "P6", "id": "P18", "type": "Mouse", "class": "Big IT" }, { "p_id": "T1", "id": "T1", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T1", "id": "T5", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T1", "id": "T6", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T2", "id": "T2", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T2", "id": "T7", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T2", "id": "T8", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T3", "id": "T3", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T3", "id": "T9", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T3", "id": "T10", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T4", "id": "T4", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T4", "id": "T11", "type": "Keyboard", "class": "Big IT" }, { "p_id": "T4", "id": "T12", "type": "Keyboard", "class": "Big IT" }, { "p_id": "H1", "id": "H1", "type": "Headset", "class": "Small IT" }, { "p_id": "H1", "id": "H5", "type": "Headset", "class": "Small IT" }, { "p_id": "H1", "id": "H6", "type": "Headset", "class": "Small IT" }, { "p_id": "H2", "id": "H2", "type": "Headset", "class": "Small IT" }, { "p_id": "H2", "id": "H7", "type": "Headset", "class": "Small IT" }, { "p_id": "H2", "id": "H8", "type": "Headset", "class": "Small IT" }, { "p_id": "H3", "id": "H3", "type": "Headset", "class": "Small IT" }, { "p_id": "H3", "id": "H9", "type": "Headset", "class": "Small IT" }, { "p_id": "H3", "id": "H10", "type": "Headset", "class": "Small IT" }, { "p_id": "H4", "id": "H4", "type": "Headset", "class": "Small IT" }, { "p_id": "H4", "id": "H11", "type": "Headset", "class": "Small IT" }, { "p_id": "H4", "id": "H12", "type": "Headset", "class": "Small IT" }, { "p_id": "K1", "id": "K1", "type": "Camera", "class": "Small IT" }, { "p_id": "K1", "id": "K4", "type": "Camera", "class": "Small IT" }, { "p_id": "K1", "id": "K5", "type": "Camera", "class": "Small IT" }, { "p_id": "K2", "id": "K2", "type": "Camera", "class": "Small IT" }, { "p_id": "K2", "id": "K6", "type": "Camera", "class": "Small IT" }, { "p_id": "K2", "id": "K7", "type": "Camera", "class": "Small IT" }, { "p_id": "K3", "id": "K3", "type": "Camera", "class": "Small IT" }, { "p_id": "K3", "id": "K8", "type": "Camera", "class": "Small IT" }, { "p_id": "K3", "id": "K9", "type": "Camera", "class": "Small IT" }],
-  processes: [{ "id": "01", "label": "Issuing inventory to clients" }, { "id": "02", "label": "Return of inventory to IT" }, { "id": "03", "label": "Return of inventory to IT for repair" }, { "id": "04", "label": "Repair of inventory" }, { "id": "05", "label": "Inventorying new items" }, { "id": "06", "label": "Self-rental of rental-item" }],
-  activities: [
-    "Pick asset from warehouse",
-    "Handover asset to IT",
-    "Describe quality issue",
-    "Place asset in repair area",
-    "Check asset availability in system",
-    "Check asset quality",
-    "Carry out repair",
-    "Unpack asset",
-    "Request asset in system",
-    "Check-Out asset to to user",
-    "Check-In asset to warehouse",
-    "Check-In asset for repair",
-    "Test asset quality and functionality",
-    "Handover asset to user",
-    "Move asset to warehouse",
-    "Move asset to repair desk",
-    "Update asset status in the system",
-    "Install and configure asset",
-    "Accept asset in system",
-    "Create system entry for asset",
-    "Label device",
-    "Pick asset from self-service desk",
-    "Idle",
-    "Open window",
-    "Close window",
-    "Enter room",
-    "Leave room",
-    "Chat",
-    "other, see notes"
-  ]
-})
 
 const track = ref();
 
@@ -169,7 +73,7 @@ function addSegment(container) {
     "tcout": currentTime.value,
     "level": 1,
     "data": {
-      "activity": config.value.activities[0],
+      "activity": config.activities[0],
       "note": "",
       "objects": [],
       "actors": [],
@@ -274,7 +178,10 @@ function loadSceneFile(event) {
         const d = (JSON.parse(e.target.result));
         track.value = d;
         track.value.file = stream + d.file;
-        console.log(track.value);
+
+        currentSegment.value = track.value.localisations[0];
+        currentSubSegment.value = currentSegment.value.localisation[0];
+
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
@@ -308,6 +215,7 @@ function sortSegments(segment) {
 
 function selectSegment(segment) {
   currentSubSegment.value = segment;
+
 }
 
 function onPlayerTimeUpdate() {
@@ -426,7 +334,8 @@ function uniqid(prefix = "", random = false) {
                 <span class="input-group-text">{{ currentTime }}</span>
                 <button title="SHIFT + ENTER" v-shortkey="['shift', 'enter']" @shortkey="addSegment(currentSegment)"
                   @click="addSegment(currentSegment)" class="btn btn-success">add</button>
-
+                <button title="sort segments" @click="sortSegments(currentSegment)" class="btn btn-outline-primary"><i
+                    class="bi bi-sort-numeric-down"></i></button>
               </div>
             </div>
           </div>
@@ -448,7 +357,7 @@ function uniqid(prefix = "", random = false) {
                 <div class="input-group input-group-sm">
                   <input class="form-control" type="text" v-model="currentSubSegment.tcout"
                     title="Write a duration in the format hh:mm:ss.ms">
-                  <button title="end timestamp" click="setTimeFor(currentSubSegment, 'tcout')"
+                  <button title="end timestamp" @click="setTimeFor(currentSubSegment, 'tcout')"
                     class="btn btn-outline-primary"><i class="bi bi-stopwatch-fill"></i></button>
                 </div>
               </div>
